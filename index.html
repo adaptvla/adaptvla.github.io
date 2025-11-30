@@ -1,0 +1,513 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="description"
+        content="AdaptVLA: Training-Free VLA Test-Time Adaptation via Language Correction">
+  <meta name="keywords" content="VLA, Vision-Language-Action, Test-Time Adaptation, Robot Learning">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>AdaptVLA: VLA Test-Time Adaptation</title>
+
+  <link href="https://fonts.googleapis.com/css?family=Google+Sans|Noto+Sans|Castoro"
+        rel="stylesheet">
+
+  <link rel="stylesheet" href="./static/css/bulma.min.css">
+  <link rel="stylesheet" href="./static/css/bulma-carousel.min.css">
+  <link rel="stylesheet" href="./static/css/bulma-slider.min.css">
+  <link rel="stylesheet" href="./static/css/fontawesome.all.min.css">
+  <link rel="stylesheet"
+        href="https://cdn.jsdelivr.net/gh/jpswalsh/academicons@1/css/academicons.min.css">
+  <link rel="stylesheet" href="./static/css/index.css">
+
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+  <script defer src="./static/js/fontawesome.all.min.js"></script>
+  <script src="./static/js/bulma-carousel.min.js"></script>
+  <script src="./static/js/bulma-slider.min.js"></script>
+  <script src="./static/js/index.js"></script>
+</head>
+<body>
+
+<section class="hero">
+  <div class="hero-body">
+    <div class="container is-max-desktop">
+      <div class="columns is-centered">
+        <div class="column has-text-centered">
+          <h1 class="title is-1 publication-title">AdaptVLA: Training-Free VLA Test-Time Adaptation via Language Correction</h1>
+          <div class="is-size-5 publication-authors">
+            <span class="author-block">Anonymous Authors</span>
+          </div>
+
+          <div class="is-size-5 publication-authors" style="margin-top: 10px;">
+            <span class="author-block"><strong>Under Review</strong></span>
+          </div>
+
+          <div class="column has-text-centered">
+            <div class="publication-links">
+              <!-- PDF Link -->
+              <span class="link-block">
+                <a href="./Final PT.pdf"
+                   class="external-link button is-normal is-rounded is-dark">
+                  <span class="icon">
+                      <i class="fas fa-file-pdf"></i>
+                  </span>
+                  <span>Paper</span>
+                </a>
+              </span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Abstract -->
+<section class="section">
+  <div class="container is-max-desktop">
+    <div class="columns is-centered has-text-centered">
+      <div class="column is-four-fifths">
+        <h2 class="title is-3">Abstract</h2>
+        <div class="content has-text-justified">
+          <p>
+            Vision-Language-Action (VLA) models show strong real-world performance but suffer from action miscalibration when deployed in new environments.
+            We propose <strong>AdaptVLA</strong>, a training-free wrapper that corrects VLA actions at deployment time using minimal language feedback.
+          </p>
+          <p>
+            Our method enables immediate policy steering without retraining by applying additive bias corrections based on human language instructions.
+            We demonstrate 100% success rate on all failure cases across LIBERO benchmarks with just 1-2 corrections per task, achieving 30-40% task time reduction with sub-millisecond overhead.
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Problem & Solution -->
+<section class="section">
+  <div class="container is-max-desktop">
+    <div class="columns is-centered">
+      <div class="column is-full-width">
+        <h2 class="title is-3">The Problem</h2>
+        <div class="content has-text-justified">
+          <p>
+            While VLAs handle diverse manipulation challenges, they exhibit <strong>zero-shot performance limitations</strong> when deployed in new settings due to distribution mismatch between training and deployment environments.
+          </p>
+          <p>
+            Traditional adaptation methods require:
+          </p>
+          <ul>
+            <li>Resource-intensive data collection</li>
+            <li>Complex fine-tuning processes</li>
+            <li>High-quality teleoperated demonstrations</li>
+          </ul>
+          <p>
+            <strong>Question:</strong> Can we immediately steer VLA policy using minimum resources at deployment?
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Method Overview -->
+<section class="section">
+  <div class="container is-max-desktop">
+    <div class="columns is-centered">
+      <div class="column is-full-width">
+        <h2 class="title is-3">Our Approach</h2>
+        <div class="content has-text-justified">
+          <h3 class="title is-4">Key Insights</h3>
+          <ol>
+            <li><strong>Additive Correction Model:</strong> Robot actions can be calibrated by applying additive bias corrections</li>
+            <li><strong>Self-Correction Propagation:</strong> Once initial actions are calibrated, the VLA automatically generates correct subsequent actions without further intervention</li>
+            <li><strong>Language as Interface:</strong> Human corrections via natural language feedback mapped to action space parameters</li>
+          </ol>
+
+          <h3 class="title is-4">Method Pipeline</h3>
+          <ol>
+            <li><strong>Robot Execution:</strong> Deploy VLA policy in new environment</li>
+            <li><strong>Human Review:</strong> Observe trajectory and provide language correction (e.g., "move left more in 1-2s")</li>
+            <li><strong>Language-Action Mapping:</strong> LLM converts feedback to structured corrections (axis, magnitude, time window)</li>
+            <li><strong>Action Calibration:</strong> Apply time-varying corrections with confidence weighting</li>
+          </ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Results Section -->
+<section class="section">
+  <div class="container is-max-desktop">
+    <div class="columns is-centered">
+      <div class="column is-full-width">
+        <h2 class="title is-3">Results</h2>
+
+        <div class="content has-text-justified">
+          <h3 class="title is-4">100% Success on All Failure Cases</h3>
+          <table class="table is-striped is-hoverable is-fullwidth">
+            <thead>
+              <tr>
+                <th>Benchmark</th>
+                <th>OpenVLA-OFT Failures</th>
+                <th>With AdaptVLA (Success/Total)</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>LIBERO-Spatial</td>
+                <td>16</td>
+                <td><strong>16/16</strong></td>
+              </tr>
+              <tr>
+                <td>LIBERO-Object</td>
+                <td>9</td>
+                <td><strong>9/9</strong></td>
+              </tr>
+              <tr>
+                <td>LIBERO-Goal</td>
+                <td>14</td>
+                <td><strong>14/14</strong></td>
+              </tr>
+              <tr>
+                <td>LIBERO-10</td>
+                <td>26</td>
+                <td><strong>26/26</strong></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="content has-text-justified">
+          <h3 class="title is-4">Key Advantages</h3>
+          <table class="table is-striped is-hoverable">
+            <thead>
+              <tr>
+                <th>Metric</th>
+                <th>Performance</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>Task Time Reduction</td>
+                <td>30-40%</td>
+              </tr>
+              <tr>
+                <td>Computational Overhead</td>
+                <td>&lt;1ms/action</td>
+              </tr>
+              <tr>
+                <td>Latency</td>
+                <td>&lt;1ms</td>
+              </tr>
+              <tr>
+                <td>Human Effort</td>
+                <td>1-2 corrections</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Video Results by Task -->
+<section class="section">
+  <div class="container is-max-desktop">
+    <div class="columns is-centered">
+      <div class="column is-full-width">
+        <h2 class="title is-3">Video Demonstrations</h2>
+
+        <!-- LIBERO-Object -->
+        <h3 class="title is-4">LIBERO-Object: Object Recognition Tasks</h3>
+        <div class="content has-text-justified">
+          <p>Tasks requiring object-specific manipulation with different items.</p>
+        </div>
+
+        <h4 class="title is-5">Pick up the BBQ sauce and place it in the basket</h4>
+        <div class="columns is-multiline">
+          <div class="column is-half">
+            <h5 class="subtitle is-6">Before Correction (Failed)</h5>
+            <video controls width="100%" style="border-radius: 8px;">
+              <source src="./our-case/libero_object/epi181_before_2025_11_26-10_05_07--openvla_oft--episode=1--success=False--task=pick_up_the_bbq_sauce_and_place_it_in_the_basket.mp4" type="video/mp4">
+            </video>
+          </div>
+          <div class="column is-half">
+            <h5 class="subtitle is-6">After Correction (Success)</h5>
+            <video controls width="100%" style="border-radius: 8px;">
+              <source src="./our-case/libero_object/epi181_2025_11_26-10_06_37--openvla_oft--episode=1--success=True--task=pick_up_the_bbq_sauce_and_place_it_in_the_basket.mp4" type="video/mp4">
+            </video>
+          </div>
+        </div>
+
+        <h4 class="title is-5">Pick up the salad dressing and place it in the basket</h4>
+        <div class="columns is-multiline">
+          <div class="column is-half">
+            <h5 class="subtitle is-6">Before Correction (Failed)</h5>
+            <video controls width="100%" style="border-radius: 8px;">
+              <source src="./our-case/libero_object/epi108_before_2025_11_26-09_09_00--openvla_oft--episode=1--success=False--task=pick_up_the_salad_dressing_and_place_it_in_the_bas.mp4" type="video/mp4">
+            </video>
+          </div>
+          <div class="column is-half">
+            <h5 class="subtitle is-6">After Correction (Success)</h5>
+            <video controls width="100%" style="border-radius: 8px;">
+              <source src="./our-case/libero_object/epi108_2025_11_26-09_56_20--openvla_oft--episode=1--success=True--task=pick_up_the_salad_dressing_and_place_it_in_the_bas.mp4" type="video/mp4">
+            </video>
+          </div>
+        </div>
+
+        <br><br>
+
+        <!-- LIBERO-Spatial -->
+        <h3 class="title is-4">LIBERO-Spatial: Spatial Reasoning Tasks</h3>
+        <div class="content has-text-justified">
+          <p>Tasks requiring understanding of spatial relationships and object locations.</p>
+        </div>
+
+        <h4 class="title is-5">Pick up the black bowl on the wooden cabinet and place it on the plate</h4>
+        <div class="columns is-multiline">
+          <div class="column is-half">
+            <h5 class="subtitle is-6">Before Correction (Failed)</h5>
+            <video controls width="100%" style="border-radius: 8px;">
+              <source src="./our-case/libero_spatial/epi462_before_2025_11_25-14_50_40--openvla_oft--episode=1--success=False--task=pick_up_the_black_bowl_on_the_wooden_cabinet_and_p.mp4" type="video/mp4">
+            </video>
+          </div>
+          <div class="column is-half">
+            <h5 class="subtitle is-6">After Correction (Success)</h5>
+            <video controls width="100%" style="border-radius: 8px;">
+              <source src="./our-case/libero_spatial/epi462_2025_11_25-14_52_04--openvla_oft--episode=1--success=True--task=pick_up_the_black_bowl_on_the_wooden_cabinet_and_p.mp4" type="video/mp4">
+            </video>
+          </div>
+        </div>
+
+        <h4 class="title is-5">Pick up the black bowl on the stove and place it on the plate</h4>
+        <div class="columns is-multiline">
+          <div class="column is-half">
+            <h5 class="subtitle is-6">Before Correction (Failed)</h5>
+            <video controls width="100%" style="border-radius: 8px;">
+              <source src="./our-case/libero_spatial/epi393_before_2025_11_25-14_35_01--openvla_oft--episode=1--success=False--task=pick_up_the_black_bowl_on_the_stove_and_place_it_o.mp4" type="video/mp4">
+            </video>
+          </div>
+          <div class="column is-half">
+            <h5 class="subtitle is-6">After Correction (Success)</h5>
+            <video controls width="100%" style="border-radius: 8px;">
+              <source src="./our-case/libero_spatial/epi393_2025_11_25-14_41_38--openvla_oft--episode=1--success=True--task=pick_up_the_black_bowl_on_the_stove_and_place_it_o.mp4" type="video/mp4">
+            </video>
+          </div>
+        </div>
+
+        <h4 class="title is-5">Pick up the black bowl in the top drawer</h4>
+        <div class="columns is-multiline">
+          <div class="column is-half">
+            <h5 class="subtitle is-6">Before Correction (Failed)</h5>
+            <video controls width="100%" style="border-radius: 8px;">
+              <source src="./our-case/libero_spatial/epi219_before_2025_11_25-13_40_21--openvla_oft--episode=1--success=False--task=pick_up_the_black_bowl_in_the_top_drawer_of_the_wo.mp4" type="video/mp4">
+            </video>
+          </div>
+          <div class="column is-half">
+            <h5 class="subtitle is-6">After Correction (Success)</h5>
+            <video controls width="100%" style="border-radius: 8px;">
+              <source src="./our-case/libero_spatial/epi219_2025_11_25-13_43_02--openvla_oft--episode=1--success=True--task=pick_up_the_black_bowl_in_the_top_drawer_of_the_wo.mp4" type="video/mp4">
+            </video>
+          </div>
+        </div>
+
+        <br><br>
+
+        <!-- LIBERO-Goal -->
+        <h3 class="title is-4">LIBERO-Goal: Goal-Oriented Tasks</h3>
+        <div class="content has-text-justified">
+          <p>Tasks requiring sequential manipulation to achieve specific goals.</p>
+        </div>
+
+        <h4 class="title is-5">Open the middle drawer of the cabinet</h4>
+        <div class="columns is-multiline">
+          <div class="column is-half">
+            <h5 class="subtitle is-6">Before Correction (Failed)</h5>
+            <video controls width="100%" style="border-radius: 8px;">
+              <source src="./our-case/libero_goal/epi39_before_2025_11_26-10_14_57--openvla_oft--episode=1--success=False--task=open_the_middle_drawer_of_the_cabinet.mp4" type="video/mp4">
+            </video>
+          </div>
+          <div class="column is-half">
+            <h5 class="subtitle is-6">After Correction (Success)</h5>
+            <video controls width="100%" style="border-radius: 8px;">
+              <source src="./our-case/libero_goal/epi39_2025_11_26-10_16_54--openvla_oft--episode=1--success=True--task=open_the_middle_drawer_of_the_cabinet.mp4" type="video/mp4">
+            </video>
+          </div>
+        </div>
+
+        <h4 class="title is-5">Open the top drawer and put the bowl inside</h4>
+        <div class="columns is-multiline">
+          <div class="column is-half">
+            <h5 class="subtitle is-6">Before Correction (Failed)</h5>
+            <video controls width="100%" style="border-radius: 8px;">
+              <source src="./our-case/libero_goal/epi171_before_2025_11_26-10_25_55--openvla_oft--episode=1--success=False--task=open_the_top_drawer_and_put_the_bowl_inside.mp4" type="video/mp4">
+            </video>
+          </div>
+          <div class="column is-half">
+            <h5 class="subtitle is-6">After Correction (Success)</h5>
+            <video controls width="100%" style="border-radius: 8px;">
+              <source src="./our-case/libero_goal/epi171_2025_11_26-10_27_10--openvla_oft--episode=1--success=True--task=open_the_top_drawer_and_put_the_bowl_inside.mp4" type="video/mp4">
+            </video>
+          </div>
+        </div>
+
+        <h4 class="title is-5">Push the plate to the front of the stove</h4>
+        <div class="columns is-multiline">
+          <div class="column is-half">
+            <h5 class="subtitle is-6">Before Correction (Failed)</h5>
+            <video controls width="100%" style="border-radius: 8px;">
+              <source src="./our-case/libero_goal/epi293_before_2025_11_26-10_28_12--openvla_oft--episode=1--success=False--task=push_the_plate_to_the_front_of_the_stove.mp4" type="video/mp4">
+            </video>
+          </div>
+          <div class="column is-half">
+            <h5 class="subtitle is-6">After Correction (Success)</h5>
+            <video controls width="100%" style="border-radius: 8px;">
+              <source src="./our-case/libero_goal/epi293_2025_11_26-10_30_00--openvla_oft--episode=1--success=True--task=push_the_plate_to_the_front_of_the_stove.mp4" type="video/mp4">
+            </video>
+          </div>
+        </div>
+
+        <h4 class="title is-5">Put the wine bottle on the rack</h4>
+        <div class="columns is-multiline">
+          <div class="column is-half">
+            <h5 class="subtitle is-6">Before Correction (Failed)</h5>
+            <video controls width="100%" style="border-radius: 8px;">
+              <source src="./our-case/libero_goal/epi459_before_2025_11_26-10_40_12--openvla_oft--episode=1--success=False--task=put_the_wine_bottle_on_the_rack.mp4" type="video/mp4">
+            </video>
+          </div>
+          <div class="column is-half">
+            <h5 class="subtitle is-6">After Correction (Success)</h5>
+            <video controls width="100%" style="border-radius: 8px;">
+              <source src="./our-case/libero_goal/epi459_2025_11_26-10_45_47--openvla_oft--episode=1--success=True--task=put_the_wine_bottle_on_the_rack.mp4" type="video/mp4">
+            </video>
+          </div>
+        </div>
+
+        <br><br>
+
+        <!-- LIBERO-10 -->
+        <h3 class="title is-4">LIBERO-10: Complex Multi-Step Tasks</h3>
+        <div class="content has-text-justified">
+          <p>Long-horizon tasks requiring multiple sequential actions and complex reasoning.</p>
+        </div>
+
+        <h4 class="title is-5">Put both the alphabet soup and the tomato sauce in</h4>
+        <div class="columns is-multiline">
+          <div class="column is-half">
+            <h5 class="subtitle is-6">Before Correction (Failed)</h5>
+            <video controls width="100%" style="border-radius: 8px;">
+              <source src="./our-case/libero_10/epi15_before_2025_11_26-10_55_55--openvla_oft--episode=1--success=False--task=put_both_the_alphabet_soup_and_the_tomato_sauce_in.mp4" type="video/mp4">
+            </video>
+          </div>
+          <div class="column is-half">
+            <h5 class="subtitle is-6">After Correction (Success)</h5>
+            <video controls width="100%" style="border-radius: 8px;">
+              <source src="./our-case/libero_10/epi15_2025_11_26-11_11_15--openvla_oft--episode=1--success=True--task=put_both_the_alphabet_soup_and_the_tomato_sauce_in.mp4" type="video/mp4">
+            </video>
+          </div>
+        </div>
+
+        <h4 class="title is-5">Put the black bowl in the bottom drawer of the cabinet</h4>
+        <div class="columns is-multiline">
+          <div class="column is-half">
+            <h5 class="subtitle is-6">Before Correction (Failed)</h5>
+            <video controls width="100%" style="border-radius: 8px;">
+              <source src="./our-case/libero_10/epi175_before_2025_11_26-11_17_58--openvla_oft--episode=1--success=False--task=put_the_black_bowl_in_the_bottom_drawer_of_the_cab.mp4" type="video/mp4">
+            </video>
+          </div>
+          <div class="column is-half">
+            <h5 class="subtitle is-6">After Correction (Success)</h5>
+            <video controls width="100%" style="border-radius: 8px;">
+              <source src="./our-case/libero_10/epi175_2025_11_26-11_20_39--openvla_oft--episode=1--success=True--task=put_the_black_bowl_in_the_bottom_drawer_of_the_cab.mp4" type="video/mp4">
+            </video>
+          </div>
+        </div>
+
+        <h4 class="title is-5">Put both moka pots on the stove</h4>
+        <div class="columns is-multiline">
+          <div class="column is-half">
+            <h5 class="subtitle is-6">Before Correction (Failed)</h5>
+            <video controls width="100%" style="border-radius: 8px;">
+              <source src="./our-case/libero_10/epi409_before_2025_11_26-11_57_02--openvla_oft--episode=1--success=False--task=put_both_moka_pots_on_the_stove.mp4" type="video/mp4">
+            </video>
+          </div>
+          <div class="column is-half">
+            <h5 class="subtitle is-6">After Correction (Success)</h5>
+            <video controls width="100%" style="border-radius: 8px;">
+              <source src="./our-case/libero_10/epi409_2025_11_26-12_02_27--openvla_oft--episode=1--success=True--task=put_both_moka_pots_on_the_stove.mp4" type="video/mp4">
+            </video>
+          </div>
+        </div>
+
+        <h4 class="title is-5">Put the yellow and white mug in the microwave and close it</h4>
+        <div class="columns is-multiline">
+          <div class="column is-half">
+            <h5 class="subtitle is-6">Before Correction (Failed)</h5>
+            <video controls width="100%" style="border-radius: 8px;">
+              <source src="./our-case/libero_10/epi462_before_2025_11_26-13_25_17--openvla_oft--episode=1--success=False--task=put_the_yellow_and_white_mug_in_the_microwave_and_.mp4" type="video/mp4">
+            </video>
+          </div>
+          <div class="column is-half">
+            <h5 class="subtitle is-6">After Correction (Success)</h5>
+            <video controls width="100%" style="border-radius: 8px;">
+              <source src="./our-case/libero_10/epi462_2025_11_26-13_34_10--openvla_oft--episode=1--success=True--task=put_the_yellow_and_white_mug_in_the_microwave_and_.mp4" type="video/mp4">
+            </video>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Discussion -->
+<section class="section">
+  <div class="container is-max-desktop">
+    <div class="columns is-centered">
+      <div class="column is-full-width">
+        <h2 class="title is-3">Key Findings</h2>
+        <div class="content has-text-justified">
+          <h3 class="title is-4">Self-Correction Propagation</h3>
+          <p>
+            A few initial corrections automatically steer the entire trajectory. After calibrating just a few timesteps, the VLA generates significantly different subsequent actions, enabling task success without continuous human intervention.
+          </p>
+
+          <h3 class="title is-4">Minimal Human Burden</h3>
+          <ul>
+            <li>Only 1-2 language corrections needed per task</li>
+            <li>No teleoperation required</li>
+            <li>No model retraining</li>
+            <li>Real-time deployment (&lt;1ms overhead)</li>
+          </ul>
+
+          <h3 class="title is-4">Limitations & Future Work</h3>
+          <ul>
+            <li>Not a learning-based approach—requires calibration for each new environment</li>
+            <li>Future: Kalman filtering for continuous adaptation</li>
+            <li>Future: Learning language-action latent mappings</li>
+            <li>Future: Automatic failure detection and self-correction</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer class="footer">
+  <div class="container">
+    <div class="columns is-centered">
+      <div class="column is-8">
+        <div class="content has-text-centered">
+          <p>
+            This website template is adapted from <a href="https://github.com/nerfies/nerfies.github.io">Nerfies</a>.
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+</footer>
+
+</body>
+</html>
